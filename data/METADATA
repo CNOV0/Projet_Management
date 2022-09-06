@@ -1,0 +1,19 @@
+Name : Integrin alpha-IIb
+code PDB : 2K1A
+
+Type : Transmembrane
+Class : Bitopic proteins
+Superfamily : Integrin
+Family : Integrin
+Species : Homo sapiens
+Localization : Eukaryotic plasma membrane
+
+Chains : A
+Length : 42
+
+Method : Solution NMR
+Conformers Calculated : 21 
+Conformers Submitted : 21 
+
+No mutations
+
