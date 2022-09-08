@@ -11,26 +11,30 @@ def dssp(file_pdb):
     return data_dssp
 
 
-def access_solvant():
-	# recup tous les acces Puis selectionner que ceux qui sont sup a 1 seuil AVEC INDEX
-	a_key = list(data_dssp.keys())[1]
-	data_dssp[a_key]
+def access_solvant(data_dssp, index):
+	a_key = list(data_dssp.keys())[index]
+	return data_dssp[a_key][3]
 
 
-def find_CA(file_pdb):
+def find_CA_access(data_dssp, file_pdb):
 	# trouve CA Puis selection de ceux qui sont en accord avec acces select
 	CA = []
 	with open(file_pdb, "r") as file_in:
 		for ligne in file_in:
-			if "ATOM" in ligne and "CA" in ligne:
+			if ligne.startswith("ATOM") and "CA" in ligne:
 				CA.append(ligne)
-	data_ca = []
+			elif ligne.startswith("ENDMDL"):
+				break
+			
+	ca_access = []
+	print(len(CA))
 	for i in range(len(CA)):
-		# coupe liste[i] selon les espaces et recup le n eme mot que l'on converti
-		data = {"nb_ca" : int(CA[i].split()[5]), "x_ca": int(CA[i].split()[6]), \
-				"y_ca": int(CA[i].split()[7]), "z_ca": int(CA[i].split()[8])}
-		data_ca.append(data)
-	return data_ca
+		access = access_solvant(data_dssp, i)
+		if access > 0.5:
+			data = {"access" : access, "nom_resid" : CA[i].split()[3], "x_ca": float(CA[i].split()[6]), \
+					"y_ca": float(CA[i].split()[7]), "z_ca": float(CA[i].split()[8])}
+			ca_access.append(data)
+	return ca_access
 
 
 def calculate_COM():
@@ -50,5 +54,8 @@ if __name__=="__main__":
 		sys.exit("Erreur : Le fichier donné n'existe pas.")
 	
 	filename = sys.argv[1]
+	
 	data_dssp = dssp(filename)
+	ca_access = find_CA_access(data_dssp, filename)
+	print(ca_access)
 
