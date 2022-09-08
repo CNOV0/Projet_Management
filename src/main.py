@@ -1,5 +1,6 @@
 import os
 import sys
+import math
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
 
@@ -27,7 +28,6 @@ def find_CA_access(data_dssp, file_pdb):
 				break
 			
 	ca_access = []
-	print(len(CA))
 	for i in range(len(CA)):
 		access = access_solvant(data_dssp, i)
 		if access > 0.5:
@@ -37,13 +37,35 @@ def find_CA_access(data_dssp, file_pdb):
 	return ca_access
 
 
-def calculate_COM():
-	# le vecteur position du COM d'un ensemble de solide vaut
-	# la moyenne pondérée par les valeurs des masses des vect positions des solides de l'ensemble
-	# Le COM : COM = (sum(miri) / M)
-	# ou M est la somme des masses de particules; N est le nb de masses m;
-	# ri est la distance du point de ref
-	return 0
+def calculate_COM(ca_data):
+	x_COM, y_COM, z_COM = 0, 0, 0
+	for ca in ca_data:
+		x_COM += ca["x_ca"]
+		y_COM += ca["y_ca"]
+		z_COM += ca["z_ca"]
+	x_COM = x_COM / len(ca_data)
+	y_COM = y_COM / len(ca_data)
+	z_COM = z_COM / len(ca_data)
+	return [x_COM, y_COM, z_COM]
+
+
+def fibonacci_sphere(samples=1000):
+
+    points = []
+    phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
+
+    for i in range(samples):
+        y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
+        radius = math.sqrt(1 - y * y)  # radius at y
+
+        theta = phi * i  # golden angle increment
+
+        x = math.cos(theta) * radius
+        z = math.sin(theta) * radius
+
+        points.append((x, y, z))
+
+    return points
 
 
 if __name__=="__main__":
@@ -57,5 +79,5 @@ if __name__=="__main__":
 	
 	data_dssp = dssp(filename)
 	ca_access = find_CA_access(data_dssp, filename)
-	print(ca_access)
+	COM = calculate_COM(ca_access)
 
