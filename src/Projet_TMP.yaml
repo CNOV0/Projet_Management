@@ -2,9 +2,9 @@ name: Projet_TMP
 channels:
   - conda-forge
   - defaults
+  - salilab
 dependencies:
   - biopython=1.79
+  - dssp
   - numpy=1.23.2
-  - pip=22.2.2
   - python=3.10.6
-  - python_abi=3.10
