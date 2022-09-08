@@ -9,6 +9,7 @@ def dssp(file_pdb):
     structure = parsed.get_structure("2K1A", file_pdb)
     model = structure[0]
     data_dssp = DSSP(model, file_pdb)
+    
     return data_dssp
 
 
@@ -18,8 +19,8 @@ def access_solvant(data_dssp, index):
 
 
 def find_CA_access(data_dssp, file_pdb):
-	# trouve CA Puis selection de ceux qui sont en accord avec acces select
 	CA = []
+	
 	with open(file_pdb, "r") as file_in:
 		for ligne in file_in:
 			if ligne.startswith("ATOM") and "CA" in ligne:
@@ -28,29 +29,42 @@ def find_CA_access(data_dssp, file_pdb):
 				break
 			
 	ca_access = []
+	
 	for i in range(len(CA)):
 		access = access_solvant(data_dssp, i)
 		if access > 0.5:
-			data = {"access" : access, "nom_resid" : CA[i].split()[3], "x_ca": float(CA[i].split()[6]), \
-					"y_ca": float(CA[i].split()[7]), "z_ca": float(CA[i].split()[8])}
+			data = {"access" : access, "nom_resid" : CA[i].split()[3], \
+					"x_ca": float(CA[i].split()[6]), \
+					"y_ca": float(CA[i].split()[7]), \
+					"z_ca": float(CA[i].split()[8])}
 			ca_access.append(data)
+	
 	return ca_access
 
 
 def calculate_COM(ca_data):
 	x_COM, y_COM, z_COM = 0, 0, 0
+	
 	for ca in ca_data:
 		x_COM += ca["x_ca"]
 		y_COM += ca["y_ca"]
 		z_COM += ca["z_ca"]
-	x_COM = x_COM / len(ca_data)
-	y_COM = y_COM / len(ca_data)
-	z_COM = z_COM / len(ca_data)
+		
+	x_COM /= len(ca_data)
+	y_COM /= len(ca_data)
+	z_COM /= len(ca_data)
+	
 	return [x_COM, y_COM, z_COM]
 
 
-def fibonacci_sphere(samples=1000):
+def center_protein(COM, ca_data):
+	for ca in ca_data:
+		ca["x_ca"] -= COM[0]
+		ca["y_ca"] -= COM[1]
+		ca["z_ca"] -= COM[2]
 
+
+def fibonacci_sphere(samples=1000):
     points = []
     phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
 
@@ -69,7 +83,7 @@ def fibonacci_sphere(samples=1000):
 
 
 if __name__=="__main__":
-	if len(sys.argv) != 2:
+	if len(sys.argv) != 2 :
 		sys.exit("Erreur : Il faut donner un seul argument qui est le nom du fichier pdb.")
 	
 	if not os.path.exists(sys.argv[1]):
@@ -80,4 +94,6 @@ if __name__=="__main__":
 	data_dssp = dssp(filename)
 	ca_access = find_CA_access(data_dssp, filename)
 	COM = calculate_COM(ca_access)
+	center_protein(COM, ca_access)
+	uniform_points = fibonacci_sphere(10)
 
