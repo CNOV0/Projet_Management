@@ -2,9 +2,6 @@
 
 Here is the code to find the most probable localisation of the membrane from a Protein Data Bank file.
 
-To run this code you will need:
-* DSSP
-
 ## Setup your environment
 
 Clone the repository:
