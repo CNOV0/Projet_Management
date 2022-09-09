@@ -1,6 +1,7 @@
 import os
 import sys
 import math
+import pandas as pd
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
 
@@ -33,43 +34,35 @@ def find_CA_access(data_dssp, file_pdb):
 	for i in range(len(CA)):
 		access = access_solvant(data_dssp, i)
 		if access > 0.5:
-			data = {"access" : access, "nom_resid" : CA[i].split()[3], \
-					"x_ca": float(CA[i].split()[6]), \
-					"y_ca": float(CA[i].split()[7]), \
-					"z_ca": float(CA[i].split()[8])}
+			data = [access, CA[i].split()[3], \
+					float(CA[i].split()[6]), \
+					float(CA[i].split()[7]), \
+					float(CA[i].split()[8])]
 			ca_access.append(data)
 	
-	return ca_access
+	return pd.DataFrame(ca_access, columns=["accessibility", "nom_resid", "x", "y", "z"])
 
 
 def calculate_COM(ca_data):
-	x_COM, y_COM, z_COM = 0, 0, 0
-	
-	for ca in ca_data:
-		x_COM += ca["x_ca"]
-		y_COM += ca["y_ca"]
-		z_COM += ca["z_ca"]
-		
-	x_COM /= len(ca_data)
-	y_COM /= len(ca_data)
-	z_COM /= len(ca_data)
+	x_COM = ca_data["x"].mean()
+	y_COM = ca_data["y"].mean()
+	z_COM = ca_data["z"].mean()
 	
 	return [x_COM, y_COM, z_COM]
 
 
 def center_protein(COM, ca_data):
-	for ca in ca_data:
-		ca["x_ca"] -= COM[0]
-		ca["y_ca"] -= COM[1]
-		ca["z_ca"] -= COM[2]
+	ca_data["x"] -= COM[0]
+	ca_data["y"] -= COM[1]
+	ca_data["z"] -= COM[2]
 
 
-def fibonacci_sphere(samples=2000):
+def fibonacci_sphere(samples=1000):
 	points = []
 	phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
 
 	for i in range(samples):
-		y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
+		y = 1 - (i / float(samples - 1))  # y goes from 1 to 0
 		radius = math.sqrt(1 - y * y)  # radius at y
 
 		theta = phi * i  # golden angle increment
@@ -77,10 +70,24 @@ def fibonacci_sphere(samples=2000):
 		x = math.cos(theta) * radius
 		z = math.sin(theta) * radius
 
-		if y >= 0:
-			points.append([x, y, z])
-
 	return points
+
+
+def atom_is_transmembrane(sphere_points, atom):
+    min_point = (xmin,ymin,zmin)
+    membrane_width = 14
+
+    d_plan1 = sphere_points[0] * min_point[0] + \
+    		sphere_points[1] * min_point[1] + \
+    		sphere_points[2] * min_point[2]
+    d_plan2 = sphere_points[0] * (min_point[0] + sphere_points[0] * membraine_width) + \
+    		sphere_points[1] * (min_point[1] + sphere_point[1] * membraine_width) + \
+    		sphere_points[2] * (min_point[2] + sphere_points[2] * membraine_width)
+    d_atom = sphere_points[0] * atom.x + sphere_points[1] * atom.y + sphere_points[2] * atom.z
+    if (sd_atom > d1) and (d_atom < d2):
+        return 1 
+    else: 
+    	return 0
 
 
 if __name__=="__main__":
@@ -96,5 +103,5 @@ if __name__=="__main__":
 	ca_access = find_CA_access(data_dssp, filename)
 	COM = calculate_COM(ca_access)
 	center_protein(COM, ca_access)
-	uniform_points = fibonacci_sphere(20)
+	uniform_points = fibonacci_sphere(10)
 
