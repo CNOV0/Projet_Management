@@ -64,22 +64,23 @@ def center_protein(COM, ca_data):
 		ca["z_ca"] -= COM[2]
 
 
-def fibonacci_sphere(samples=1000):
-    points = []
-    phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
+def fibonacci_sphere(samples=2000):
+	points = []
+	phi = math.pi * (3. - math.sqrt(5.))  # golden angle in radians
 
-    for i in range(samples):
-        y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
-        radius = math.sqrt(1 - y * y)  # radius at y
+	for i in range(samples):
+		y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
+		radius = math.sqrt(1 - y * y)  # radius at y
 
-        theta = phi * i  # golden angle increment
+		theta = phi * i  # golden angle increment
 
-        x = math.cos(theta) * radius
-        z = math.sin(theta) * radius
+		x = math.cos(theta) * radius
+		z = math.sin(theta) * radius
 
-        points.append((x, y, z))
+		if y >= 0:
+			points.append([x, y, z])
 
-    return points
+	return points
 
 
 if __name__=="__main__":
@@ -95,5 +96,5 @@ if __name__=="__main__":
 	ca_access = find_CA_access(data_dssp, filename)
 	COM = calculate_COM(ca_access)
 	center_protein(COM, ca_access)
-	uniform_points = fibonacci_sphere(10)
+	uniform_points = fibonacci_sphere(20)
 
