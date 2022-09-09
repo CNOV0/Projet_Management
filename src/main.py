@@ -69,25 +69,46 @@ def fibonacci_sphere(samples=1000):
 
 		x = math.cos(theta) * radius
 		z = math.sin(theta) * radius
+		
+		points.append((x, y, z))
 
 	return points
 
 
-def atom_is_transmembrane(sphere_points, atom):
-    min_point = (xmin,ymin,zmin)
-    membrane_width = 14
+def atom_is_transmembrane(sphere_points, ca_coords):
+	membrane_width = 22  # Dans le cas d'une protein ayant just eun squelette CA
+	point_min = [0, 0, 0]  # valeur a mettre (xmin,ymin,zmin)
+	point_max = [0, 0, 0]
+	# boucle sur chaque point sphere et check si est dans plane
+	for point in sphere_points:
+		# ici paraleliser - itere sur min -> max par saut de 1A
+		while point_min < point_max:
+			if carbon_is_in_membrane():
+				hydro = 0
+				# check si hydrophobe
+				# calcul hydrophobicité
+				# garder best one w/ info pour la retrouvé
+			point_min = 0  # new mean point (ajout d'1A)
+	return hydrophobicity
 
-    d_plan1 = sphere_points[0] * min_point[0] + \
-    		sphere_points[1] * min_point[1] + \
-    		sphere_points[2] * min_point[2]
-    d_plan2 = sphere_points[0] * (min_point[0] + sphere_points[0] * membraine_width) + \
-    		sphere_points[1] * (min_point[1] + sphere_point[1] * membraine_width) + \
-    		sphere_points[2] * (min_point[2] + sphere_points[2] * membraine_width)
-    d_atom = sphere_points[0] * atom.x + sphere_points[1] * atom.y + sphere_points[2] * atom.z
-    if (sd_atom > d1) and (d_atom < d2):
-        return 1 
-    else: 
-    	return 0
+
+def carbon_is_in_membrane():
+	d_plane1 = calcule_plane()
+	d_plane2 = calculate_plane()
+	d_ca = calculate_plane()  # sphere_points[0] * atom.x + sphere_points[1] * atom.y + sphere_points[2] * atom.z
+	if (d_ca > d_plane1) and (d_ca < d_plane2):
+		return True
+	else:
+		return False
+
+
+def calculate_plane():
+	x_0 = ca_data.loc[0, "x"]
+	# calcule l'équation de plan
+	d_plan = sphere_points[0] * (min_point[0] + sphere_points[0] * membraine_width) + \
+			sphere_points[1] * (min_point[1] + sphere_point[1] * membraine_width) + \
+			sphere_points[2] * (min_point[2] + sphere_points[2] * membraine_width)
+	return d_plan
 
 
 if __name__=="__main__":
@@ -103,5 +124,5 @@ if __name__=="__main__":
 	ca_access = find_CA_access(data_dssp, filename)
 	COM = calculate_COM(ca_access)
 	center_protein(COM, ca_access)
-	uniform_points = fibonacci_sphere(10)
+	sphere_points = fibonacci_sphere(10)
 
