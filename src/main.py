@@ -194,32 +194,38 @@ def calculate_hydrobicity(sphere_points, ca_data):
         The best score of hydrophobity
     """
     score = 0
-    mini = pd.Series([ca_data["x"].min(), ca_data["y"].min(), ca_data["z"].min()])
-    maxi = pd.Series([ca_data["x"].max(), ca_data["y"].max(), ca_data["z"].max()])
     # Loop on each point of the sphere
     for point in sphere_points:
+        mini = pd.Series([ca_data["x"].min(), ca_data["y"].min(), \
+                    ca_data["z"].min()], index=["x","y", "z"])
+        maxi = pd.Series([ca_data["x"].max(), ca_data["y"].max(), \
+                    ca_data["z"].max()], index=["x","y", "z"])
         # should be parallelised
         while mini["x"] < maxi["x"] or mini["y"] < maxi["y"] or mini["z"] < maxi["z"]:
+            nb_ca, hydro = 0, 0
             for i in range(ca_data.shape[0]):
-                nb_ca, hydro = 0, 0
                 if carbon_is_in_membrane(point, ca_data.iloc[i], mini, 22):
                     nb_ca += 1
-                    if is_hydrophobe(ca_data.iloc[i, "resid_name"]):
+                    if is_hydrophobe(ca_data.iloc[i]):
                         hydro += 1
+            if nb_ca != 0:
                 score_slice = hydro / nb_ca
                 if score < score_slice:
-                    score = score_slice  # add info to locate it
+                    score = score_slice  # ADD INFO FOR LOCATION
             mini += 1
     return score
 
 
-def is_hydrophobe(resid_name):
+def is_hydrophobe(carbon):
     """Test if an atom is in a hydrophobe residu.
 
     Parameters
     ----------
-    resid_name : str
-        The name of the atom's residu
+    carbon : Pandas Series
+        Series containing the name of its residu
+
+        The Series contain also the coordinate of the atom
+        and its solvant accessobility
 
     Returns
     -------
@@ -228,7 +234,7 @@ def is_hydrophobe(resid_name):
     """
     hydrophobe = ["TRP", "ISO", "LEU", "PHE", "ALA", "MET", "VAL"]
 
-    if resid_name in hydrophobe:
+    if carbon["resid_name"] in hydrophobe:
         return True
     return False
 
@@ -299,3 +305,5 @@ if __name__ == "__main__":
     center_of_mass = calculate_com(ca_info)
     center_protein(center_of_mass, ca_info)
     uniform_points = fibonacci_sphere(10)
+    score = calculate_hydrobicity(uniform_points, ca_info)
+    print(score)
