@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import pandas as pd
+import matplotlib.pyplot as plt
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP
 
@@ -176,7 +177,7 @@ def fibonacci_sphere(samples=1000):
     return points
 
 
-def calculate_hydrobicity(sphere_points, ca_data):
+def calculate_membrane_pos(sphere_points, ca_data):
     """Calculate the hydrophobicity within a slice.
 
     Parameters
@@ -193,7 +194,7 @@ def calculate_hydrobicity(sphere_points, ca_data):
     int
         The best score of hydrophobity
     """
-    score = 0
+    membrane = {"score": 0,"point": 0, "bas_memb":0}
     # Loop on each point of the sphere
     for point in sphere_points:
         mini = pd.Series([ca_data["x"].min(), ca_data["y"].min(), \
@@ -209,11 +210,13 @@ def calculate_hydrobicity(sphere_points, ca_data):
                     if is_hydrophobe(ca_data.iloc[i]):
                         hydro += 1
             if nb_ca != 0:
-                score_slice = hydro / nb_ca
-                if score < score_slice:
-                    score = score_slice  # ADD INFO FOR LOCATION
+                score  = hydro / nb_ca
+                if membrane["score"] < score:
+                    membrane["score"] = score
+                    membrane["point"] = point
+                    membrane["bas_memb"] = mini
             mini += 1
-    return score
+    return membrane
 
 
 def is_hydrophobe(carbon):
@@ -290,6 +293,32 @@ def calculate_plane(sphere_pt, atom, memb_width):
     return plane_d
 
 
+def plot(ca_data, memb):
+    """Plot the protein and the membrane plane.
+    
+    Stores the results on a png file.
+
+    Parameters
+    ----------
+    ca_data : Pandas DataFrame
+        The coordinates of the alpha carbon in the protein
+    memb : dictionnary
+        Dictionnary containing the score of the membrane plane,
+        the position of the lower and upper layer.
+    """
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    
+    ax.scatter3D(ca_data["x"], ca_data["y"], ca_data["z"])
+    ax.scatter3D(memb["bas_memb"]["x"], memb["bas_memb"]["y"], 
+                memb["bas_memb"]["z"])
+    ax.scatter3D(memb["bas_memb"]["x"] + memb["point"][0]*22, 
+                memb["bas_memb"]["y"] + memb["point"][1]*22, 
+                memb["bas_memb"]["z"] + memb["point"][2]*22)
+
+    plt.savefig("results/protein_3d.png", format="png")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         sys.exit("Erreur : Il faut donner un seul argument qui est"
@@ -305,5 +334,7 @@ if __name__ == "__main__":
     center_of_mass = calculate_com(ca_info)
     center_protein(center_of_mass, ca_info)
     uniform_points = fibonacci_sphere(10)
-    score = calculate_hydrobicity(uniform_points, ca_info)
-    print(score)
+    memb_pos = calculate_membrane_pos(uniform_points, ca_info)
+    plot(ca_info, memb_pos)
+    print("The membrane plane has been calculated.", 
+    "\nYou can find a overview in the results directory.")
