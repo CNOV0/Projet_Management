@@ -1,5 +1,5 @@
 Name : Integrin alpha-IIb
-code PDB : 2K1Afait l
+code PDB : 2K1A
 
 Type : Transmembrane
 Class : Bitopic proteins
@@ -17,3 +17,23 @@ Conformers Submitted : 21
 
 No mutations
 
+################################################################################
+
+Name : Schistocin-1 antimicrobial peptide in presence of DPC-d38 micelles
+code PDB : 7M67
+
+Type : Peptide
+Class : Alpha-helical peptides
+Superfamily : Designed alpha_helical peptides
+Family : Basic amphiphilic peptides
+Species : Schistosoma mansoni
+Localization : Secreted
+
+Chains : A
+Length : 21
+
+Method : Solution NMR
+Conformers Calculated : 40 
+Conformers Submitted : 10
+
+Mutations : Amidation 21st amino acid
