@@ -1,10 +1,6 @@
 import sys
 import os
-import math
 import pandas as pd
-import matplotlib.pyplot as plt
-from Bio.PDB import PDBParser
-from Bio.PDB.DSSP import DSSP
 import calculate_membrane
 import extract_ca_accessible
 import center
