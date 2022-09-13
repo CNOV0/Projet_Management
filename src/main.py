@@ -22,7 +22,7 @@ if __name__ == "__main__":
     center.center_protein(center_of_mass, ca_info)
     uniform_points = calculate_membrane.fibonacci_sphere()
     memb_pos = calculate_membrane.position(uniform_points, ca_info)
-    calculate_membrane.plot(ca_info, memb_pos, center_of_mass)
+    calculate_membrane.plot(ca_info, memb_pos)
     print("The membrane plane has been calculated.", 
     "\nIts score is", memb_pos["score"], 
     "\nYou can view the result in the results directory.")
