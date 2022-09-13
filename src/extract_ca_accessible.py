@@ -83,9 +83,9 @@ def find_ca_access(dssp_data, file_pdb):
     for i in range(len(carbon_alpha)):
         access = access_solvant(dssp_data, i)
         if access > 0.5:
-            data = [access, carbon_alpha[i].split()[3], \  # get the name
-                    float(carbon_alpha[i].split()[6]), \  # get x
-                    float(carbon_alpha[i].split()[7]), \  # get y
+            data = [access, carbon_alpha[i].split()[3], \
+                    float(carbon_alpha[i].split()[6]), \
+                    float(carbon_alpha[i].split()[7]), \
                     float(carbon_alpha[i].split()[8])]  # get z
             ca_access.append(data)
 
