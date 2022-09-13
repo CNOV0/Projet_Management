@@ -53,17 +53,17 @@ def position(sphere_points, ca_data):
     int
         The best score of hydrophobity
     """
-    membrane = {"score": 0,"point": 0, "bas_memb":0}
+    membrane = {"score": 0,"point": 0, "low_memb":0}
     # Loop on each point of the sphere
     for point in sphere_points:
         mini = pd.Series([ca_data["x"].min(), ca_data["y"].min(), \
-                    ca_data["z"].min()], index=["x","y", "z"])
+                    ca_data["z"].min()], index=["x","y", "z"])  # minimal point
         maxi = pd.Series([ca_data["x"].max(), ca_data["y"].max(), \
-                    ca_data["z"].max()], index=["x","y", "z"])
-        # should be parallelised
+                    ca_data["z"].max()], index=["x","y", "z"])  # maximal point
+        # loop on each position of the membrane
         while mini["x"] < maxi["x"] or mini["y"] < maxi["y"] or mini["z"] < maxi["z"]:
             nb_ca, hydro = 0, 0
-            for i in range(ca_data.shape[0]):
+            for i in range(ca_data.shape[0]):  # loop on the CA
                 if carbon_is_in_membrane(point, ca_data.iloc[i], mini, 22):
                     nb_ca += 1
                     if is_hydrophobe(ca_data.iloc[i]):
@@ -73,7 +73,7 @@ def position(sphere_points, ca_data):
                 if membrane["score"] < score:
                     membrane["score"] = score
                     membrane["point"] = point
-                    membrane["bas_memb"] = mini
+                    membrane["low_memb"] = mini
             mini += 1
     return membrane
 
@@ -168,11 +168,11 @@ def plot(ca_data, memb, com):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     
-    ax.scatter3D(ca_data["x"], ca_data["y"], ca_data["z"])
-    ax.scatter3D(memb["bas_memb"]["x"], memb["bas_memb"]["y"], 
-                memb["bas_memb"]["z"])
-    ax.scatter3D(memb["bas_memb"]["x"] + memb["point"][0]*22, 
-                memb["bas_memb"]["y"] + memb["point"][1]*22, 
-                memb["bas_memb"]["z"] + memb["point"][2]*22)
+    ax.scatter3D(ca_data["x"]+com[0], ca_data["y"]+com[1], ca_data["z"]+com[2])
+    ax.scatter3D(memb["low_memb"]["x"], memb["low_memb"]["y"], 
+                memb["low_memb"]["z"])
+    ax.scatter3D(memb["low_memb"]["x"] + memb["point"][0]*22, 
+                memb["low_memb"]["y"] + memb["point"][1]*22, 
+                memb["low_memb"]["z"] + memb["point"][2]*22)
 
     plt.savefig("results/protein_with_memb.png", format="png")
