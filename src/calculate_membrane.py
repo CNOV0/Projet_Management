@@ -1,4 +1,8 @@
+#!/usr/bin/python
+
 """Module to calculate the mebrane plane on the protein."""
+
+# import modules
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
