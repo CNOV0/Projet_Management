@@ -45,7 +45,7 @@ def access_solvant(dssp_data, index):
         The solvant accessibility of the atom
     """
     a_key = list(dssp_data.keys())[index]
-    return dssp_data[a_key][3]
+    return dssp_data[a_key][3]  # returns the accessibility score for each CA
 
 
 def find_ca_access(dssp_data, file_pdb):
@@ -75,7 +75,7 @@ def find_ca_access(dssp_data, file_pdb):
         for ligne in file_in:
             if ligne.startswith("ATOM") and "CA" in ligne:
                 carbon_alpha.append(ligne)
-            elif ligne.startswith("ENDMDL"):
+            elif ligne.startswith("ENDMDL"):  # to get just 1 model
                 break
 
     ca_access = []
@@ -83,10 +83,10 @@ def find_ca_access(dssp_data, file_pdb):
     for i in range(len(carbon_alpha)):
         access = access_solvant(dssp_data, i)
         if access > 0.5:
-            data = [access, carbon_alpha[i].split()[3], \
-                    float(carbon_alpha[i].split()[6]), \
-                    float(carbon_alpha[i].split()[7]), \
-                    float(carbon_alpha[i].split()[8])]
+            data = [access, carbon_alpha[i].split()[3], \  # get the name
+                    float(carbon_alpha[i].split()[6]), \  # get x
+                    float(carbon_alpha[i].split()[7]), \  # get y
+                    float(carbon_alpha[i].split()[8])]  # get z
             ca_access.append(data)
 
     return pd.DataFrame(ca_access, columns=["accessibility", "resid_name",
