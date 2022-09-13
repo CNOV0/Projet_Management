@@ -45,6 +45,6 @@ def center_protein(com, ca_data):
     int
         Le produit des deux nombres.
     """
-    ca_data["x"] -= com[0]
+    ca_data["x"] -= com[0]  # on every x of the dtf
     ca_data["y"] -= com[1]
     ca_data["z"] -= com[2]
