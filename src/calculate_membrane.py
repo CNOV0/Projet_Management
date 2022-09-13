@@ -61,7 +61,7 @@ def position(sphere_points, ca_data):
         maxi = pd.Series([ca_data["x"].max(), ca_data["y"].max(), \
                     ca_data["z"].max()], index=["x","y", "z"])  # maximal point
         # loop on each position of the membrane
-        while mini["x"] < maxi["x"] or mini["y"] < maxi["y"] or mini["z"] < maxi["z"]:
+        while mini["y"] < maxi["y"]:
             nb_ca, hydro = 0, 0
             for i in range(ca_data.shape[0]):  # loop on the CA
                 if carbon_is_in_membrane(point, ca_data.iloc[i], mini, 22):
@@ -152,7 +152,7 @@ def calculate_plane(sphere_pt, atom, memb_width):
     return plane_d
 
 
-def plot(ca_data, memb, com):
+def plot(ca_data, memb):
     """Plot the protein and the membrane plane.
     
     Stores the results on a png file.
@@ -168,7 +168,7 @@ def plot(ca_data, memb, com):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     
-    ax.scatter3D(ca_data["x"]+com[0], ca_data["y"]+com[1], ca_data["z"]+com[2])
+    ax.scatter3D(ca_data["x"], ca_data["y"], ca_data["z"])
     ax.scatter3D(memb["low_memb"]["x"], memb["low_memb"]["y"], 
                 memb["low_memb"]["z"])
     ax.scatter3D(memb["low_memb"]["x"] + memb["point"][0]*22, 
