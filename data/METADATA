@@ -15,11 +15,11 @@ Method : Solution NMR
 Conformers Calculated : 21 
 Conformers Submitted : 21 
 
-No mutations
+Mutations : No
 
 ################################################################################
 
-Name : Schistocin-1 antimicrobial peptide in presence of DPC-d38 micelles
+Name : Schistocin-1 antimicrobial peptide
 code PDB : 7M67
 
 Type : Peptide
@@ -37,3 +37,25 @@ Conformers Calculated : 40
 Conformers Submitted : 10
 
 Mutations : Amidation 21st amino acid
+
+################################################################################
+
+Name : Human hemoglobin A2
+code PDB : 1SI4
+
+Type : Globular
+Class : Mainly Alpha
+Superfamily : Globin-like
+Family : Globin
+Species : Homo sapiens
+Localization : /
+
+Chains : A, C
+Length : 141
+Chains : B, D
+Length : 146
+
+Method : X_ray diffraction
+Resolution : 2.20A
+
+Mutations : No
