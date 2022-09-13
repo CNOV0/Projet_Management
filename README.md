@@ -28,7 +28,7 @@ Create the "Projet_TMP" conda environment:
 ```
 mamba env create -f src/Projet_TMP.yaml
 ```
-or
+or if you don't want to install mamba:
 ```
 conda env create -f src/Projet_TMP.yaml
 ```
@@ -50,3 +50,14 @@ To deactivate an active environment, use
 conda deactivate
 ```
 
+## Run the algorithm
+
+Create the results directory:
+```bash
+mkdir results
+```
+
+Run the algorithm:
+```bash
+python3 src/main.py [file]
+```
