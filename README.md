@@ -1,5 +1,7 @@
 # Transmembrane Protein Project
 
+Author : Maya Zygadlo
+
 Here is the code to find the most probable localisation of the membrane from a Protein Data Bank file.
 
 ## Setup your environment
