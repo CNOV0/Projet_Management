@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 "Module to calculate the centre of mass and center a protein."
 
