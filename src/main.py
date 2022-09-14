@@ -1,9 +1,14 @@
+#!/usr/bin/python3
+
+"""
+Script predicting the location of the mebrane given a PDB file.
+"""
+
+# import modules
 import sys
 import os
 import pandas as pd
-import calculate_membrane
-import extract_ca_accessible
-import center
+from bin import *
 
 
 if __name__ == "__main__":
