@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 "Module to read a pdb file and extract the alpha carbon that are accessible to the solvant."
 
