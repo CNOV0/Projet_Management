@@ -1,4 +1,8 @@
+#!/usr/bin/python3
+
 "Module to read a pdb file and extract the alpha carbon that are accessible to the solvant."
+
+# import modules
 import pandas as pd
 from Bio.PDB import PDBParser
 from Bio.PDB.DSSP import DSSP

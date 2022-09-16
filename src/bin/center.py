@@ -1,4 +1,8 @@
+#!/usr/bin/python3
+
 "Module to calculate the centre of mass and center a protein."
+
+# import modules
 import pandas as pd
 
 

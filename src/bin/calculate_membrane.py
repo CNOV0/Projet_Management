@@ -1,4 +1,8 @@
+#!/usr/bin/python3
+
 """Module to calculate the mebrane plane on the protein."""
+
+# import modules
 import pandas as pd
 import math
 import matplotlib.pyplot as plt
@@ -64,7 +68,7 @@ def position(sphere_points, ca_data):
         while mini["y"] < maxi["y"]:
             nb_ca, hydro = 0, 0
             for i in range(ca_data.shape[0]):  # loop on the CA
-                if carbon_is_in_membrane(point, ca_data.iloc[i], mini, 22):
+                if is_in_membrane(point, ca_data.iloc[i], mini, 22):
                     nb_ca += 1
                     if is_hydrophobe(ca_data.iloc[i]):
                         hydro += 1
@@ -101,7 +105,7 @@ def is_hydrophobe(carbon):
     return False
 
 
-def carbon_is_in_membrane(sphere_pt, ca_coords, point_min, memb_width):
+def is_in_membrane(sphere_pt, ca_coords, point_min, memb_width):
     """Test if an atom is between two planes.
 
     Parameters
